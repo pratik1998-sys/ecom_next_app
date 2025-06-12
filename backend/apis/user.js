@@ -1,22 +1,24 @@
 import express from "express";
 import mongoose from "mongoose";
-import { CustomerSchema } from "../schema/User.js";
+import { UserSchema } from "../schema/User.js";
 
-export const CustomerRouter = express.Router();
+export const UserRouter = express.Router();
 
-const Customer = mongoose.model("customers", CustomerSchema);
+const User = mongoose.model("user", UserSchema);
 
-// 1. Register an customer
-CustomerRouter.post("/", async (req, res) => {
+// 1. Register an User
+UserRouter.post("/", async (req, res) => {
   try {
-    const customer = new Customer(req.body);
-    console.log(customer);
-    let result = await customer.save();
+    const user = new User(req.body);
+    console.log(User);
+    let result = await user.save();
     if (result) {
-      res.status(201).send(result);
+      res
+        .status(201)
+        .send({ message: "users registered successfully", data: result });
     } else {
-      console.log("Customer already registered");
-      res.status(400).send("Customer already registered");
+      console.log("user already registered");
+      res.status(400).send({ message: "user already registered", data: null });
     }
   } catch (err) {
     res
@@ -25,17 +27,39 @@ CustomerRouter.post("/", async (req, res) => {
   }
 });
 
-// 2. find a customer
-CustomerRouter.get("/:name", async (req, res) => {
+// 2. find a User
+UserRouter.post("/login", async (req, res) => {
   try {
-    const result = await Customer.find({
-      name: req.params.name.toString(),
+    const result = await User.findOne({
+      email: req.body.email.toString(),
+      password: req.body.password.toString(),
+    });
+    if (result) {
+      res
+        .status(201)
+        .send({ message: "user fetched successfully", data: result });
+    } else {
+      console.log("User does not exist");
+      res.status(400).send({ message: "user does not exist", data: null });
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .send({ message: "Something went wrong", error: err.message });
+  }
+});
+
+// 3. delete a User
+UserRouter.delete("/:userId", async (req, res) => {
+  try {
+    const result = await User.findOneAndDelete({
+      _id: req.params.userId.toString(),
     });
     if (result) {
       res.status(201).send(result);
     } else {
-      console.log("Customer does not exist");
-      res.status(400).send("Customer does not exist");
+      console.log("User does not exist");
+      res.status(400).send("User does not exist");
     }
   } catch (err) {
     res
@@ -44,34 +68,38 @@ CustomerRouter.get("/:name", async (req, res) => {
   }
 });
 
-// 3. delete a customer
-CustomerRouter.delete("/:name", async (req, res) => {
-  try {
-    const result = await Customer.findOneAndDelete({
-      name: req.params.name.toString(),
-    });
-    if (result) {
-      res.status(201).send(result);
-    } else {
-      console.log("Customer does not exist");
-      res.status(400).send("Customer does not exist");
-    }
-  } catch (err) {
-    res
-      .status(500)
-      .send({ message: "Something went wrong", error: err.message });
-  }
-});
+// // 2. get all Users
+// UserRouter.get("/", async (req, res) => {
+//   try {
+//     const result = await User.find();
+//     if (result) {
+//       res.status(201).send(result);
+//     } else {
+//       console.log("error fetching Users");
+//       res.status(400).send("error feching Users");
+//     }
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .send({ message: "Something went wrong", error: err.message });
+//   }
+// });
 
-// 2. get all customers
-CustomerRouter.get("/", async (req, res) => {
+// 4. update a User
+UserRouter.put("/:userId", async (req, res) => {
   try {
-    const result = await Customer.find();
+    const result = await User.findOneAndUpdate(
+      { _id: req.params.userId.toString() },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (result) {
-      res.status(201).send(result);
+      res
+        .status(200)
+        .send({ message: "User updated successfully", data: result });
     } else {
-      console.log("error fetching customers");
-      res.status(400).send("error feching customers");
+      console.log("User does not exist");
+      res.status(400).send("User does not exist");
     }
   } catch (err) {
     res

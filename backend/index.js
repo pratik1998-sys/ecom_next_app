@@ -2,10 +2,11 @@
 
 import mongoose from "mongoose";
 import express from "express";
-import { CustomerRouter } from "./apis/user.js";
+import { UserRouter } from "./apis/user.js";
 import { OrderRouter } from "./apis/order.js";
 import { CategoryRouter } from "./apis/category.js";
 import cors from "cors";
+import { ProductRouter } from "./apis/product.js";
 
 export const app = express();
 app.use(express.json());
@@ -14,9 +15,10 @@ const PORT = 5000;
 app.use(cors({ origin: "http://localhost:3000" }));
 
 // Use routes
-app.use("/customer", CustomerRouter);
+app.use("/user", UserRouter);
 app.use("/order", OrderRouter);
 app.use("/category", CategoryRouter);
+app.use("/product", ProductRouter);
 
 // MongoDB connection
 mongoose

@@ -40,11 +40,11 @@ const AdminCategories = () => {
   };
 
   const editButtonHandler = (categoryID) => {
-    router.push(`/admin-categories/edit/${categoryID}`);
+    router.push(`/admin/category/edit/${categoryID}`);
   };
 
   const AddCategoryButtonHandler = () => {
-    router.push("/admin-categories/add");
+    router.push("/admin/category/add");
   };
 
   const deleteCategoryButtonHandler = (category) => {
@@ -82,10 +82,31 @@ const AdminCategories = () => {
     <>
       <PageHeader>
         <Stack direction={"row"} gap={2}>
-          <Button variant="text">Admin</Button>
-          <Button variant="text">User</Button>
+          <Button
+            variant="text"
+            onClick={() => router.push("/admin/dashboard")}
+          >
+            Admin
+          </Button>
         </Stack>
       </PageHeader>
+      <Box
+        sx={{
+          height: "1px",
+          width: "100%",
+          padding: "0 50px",
+          position: "relative",
+        }}
+      >
+        <Button
+          variant="text"
+          color="primary"
+          sx={{ position: "absolute", top: "-52.5px", left: "80px" }}
+          onClick={() => router.push(`/`)}
+        >
+          Home
+        </Button>
+      </Box>
       {Categories ? (
         <Stack direction={"column"} gap={1} padding={"10px 35%"}>
           <Stack
@@ -152,8 +173,20 @@ const AdminCategories = () => {
           height={"100%"}
           width={"100%"}
         >
-          <Box>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Box
+            sx={{
+              borderRadius: "10px",
+              padding: "40px",
+              backgroundColor: "#fff",
+              border: "1px solid #ccc",
+            }}
+          >
+            <Typography
+              sx={{ marginBottom: "2rem" }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
               do you want to delete category {categoryToDelete?.name}?
             </Typography>
             <Stack
